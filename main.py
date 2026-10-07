@@ -715,17 +715,23 @@ if __name__ == "__main__":
         folder_to_save_reports_to=None,
         skip_previously_forecasted_questions=True,
         extra_metadata_in_explanation=True,
-        # llms={
-        #     "default": GeneralLlm(
-        #         model="openrouter/openai/gpt-4o",
-        #         temperature=0.3,
-        #         timeout=40,
-        #         allowed_tries=2,
-        #     ),
-        #     "summarizer": "openai/gpt-4o-mini",
-        #     "researcher": "asknews/news-summaries",
-        #     "parser": "openai/gpt-4o-mini",
-        # },
+        llms={
+            # Using a direct OPENAI_API_KEY (not OpenRouter) to avoid OpenRouter's
+            # near-zero pay-as-you-go balance/in-flight-budget issues on that account.
+            "default": GeneralLlm(
+                model="openai/gpt-4o",
+                temperature=0.3,
+                timeout=60,
+                allowed_tries=2,
+            ),
+            "summarizer": "openai/gpt-4o-mini",
+            "researcher": GeneralLlm(
+                model="openai/gpt-5-search-api",  # native OpenAI web-search-enabled model
+                timeout=60,
+                allowed_tries=2,
+            ),
+            "parser": "openai/gpt-4o-mini",
+        },
     )
 
     # Per-mode tournament URL shown in the summary banner footer. These
